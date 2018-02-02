@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#1、是啥? 处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作; #2、有什么作用?  保持线程的鲜活;(让线程不会执行一次任务后就退出结束) 在有任务时工作,没有时休眠,减少">
+<meta property="og:type" content="article">
+<meta property="og:title" content="结识RunLoop">
+<meta property="og:url" content="http://yoursite.com/2018/02/03/结识RunLoop/index.html">
+<meta property="og:site_name" content="顺其自然">
+<meta property="og:description" content="#1、是啥? 处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作; #2、有什么作用?  保持线程的鲜活;(让线程不会执行一次任务后就退出结束) 在有任务时工作,没有时休眠,减少">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-02T17:51:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="结识RunLoop">
+<meta name="twitter:description" content="#1、是啥? 处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作; #2、有什么作用?  保持线程的鲜活;(让线程不会执行一次任务后就退出结束) 在有任务时工作,没有时休眠,减少">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/03/结识RunLoop/"/>
+
+
+
+
+
+  <title>结识RunLoop | 顺其自然</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">顺其自然</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">星星点灯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/03/结识RunLoop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XJ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="顺其自然">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">结识RunLoop</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-03T01:51:08+08:00">
+                2018-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#1、是啥?</p>
+<p>处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;</p>
+<p>#2、有什么作用?</p>
+<ol>
+<li>保持线程的鲜活;(让线程不会执行一次任务后就退出结束)</li>
+<li>在有任务时工作,<br>没有时休眠,减少CPU的压力;(在有输入源工作,没有时会sleep)</li>
+<li>处理各种事件源;</li>
+</ol>
+<p>#3、它和线程有什么关系呢?<br>runloop和线程是一一对应的关系,也就是说一个线程对应一个runloop,程序启动后系统会创建一个全局的字典保存runloop,线程是key,runloop是对应的value,而且runloop采用类似懒加载的形式,子线程的runloop第一次去获取才会去创建,也就是根据线程去全局的字典中去找,找不到创建,但是需要注意的是主线程的runloop是程序启动就会自动获取的,CFRunloopRef中可以用CFRunLoopGetMain() 和 CFRunLoopGetCurrent()获取.</p>
+<p>#4、RunLoopMode和ModeItem</p>
+<blockquote>
+<p>Runloop启动时需要指定一个RunloopMode才能运行,而且一个Runloop可以有多个RunloopMode,如果你要切换模式,则需要先退出当前的RunloopMode,一个RunloopMode又由多个modeItem组成,但是至少得有一个modeItem;下面介绍一下modeItem:</p>
+<ol>
+<li>modeItem:简单来说既是源头,既是触发Runloop干事的源;</li>
+<li>runlop中的源有输入源Input Source(各种触发事件),定时源Timer Source(定时器),观察者(Observer);</li>
+<li>runloopMode可以认为是如何分配安排它内部上面各种源的执行方式和顺序;</li>
+</ol>
+</blockquote>
+<p><1> 输入源Input Source</1></p>
+<p>(1)基于端口输入源(Source1):它是内核驱动的,苹果官方的介绍是这样的:<br><img src="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-10-21 11.32.14.png"></p>
+<p>也就是说我们根本不需要创建source1,只需要创建一个端口对象NSPort,然后将这个port添加到当前runloop就好,当我们向该端口发送消息时,端口对象会为我们创建source1,主动唤醒runloop并触发相应回调;我们可以使用CFMachPortRef，CFMessagePortRef或CFSocketRef创建合适的端口对象;</p>
+<p>(2)自定义输入源(Source0):<br>让Source0执行回调需要手动标记Source0为待处理状态，还需要呼醒Source0所在的RunLoop</p>
+<p><2>定时源Timer Source:</2></p>
+<p><3>观察者(Observer):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef CF_OPTIONS(CFOptionFlags, CFRunLoopActivity) &#123;</span><br><span class="line">kCFRunLoopEntry         = (1UL &lt;&lt; 0), // 即将进入Loop</span><br><span class="line">kCFRunLoopBeforeTimers  = (1UL &lt;&lt; 1), // 即将处理 Timer</span><br><span class="line">kCFRunLoopBeforeSources = (1UL &lt;&lt; 2), // 即将处理 Source</span><br><span class="line">kCFRunLoopBeforeWaiting = (1UL &lt;&lt; 5), // 即将进入休眠</span><br><span class="line">kCFRunLoopAfterWaiting  = (1UL &lt;&lt; 6), // 刚从休眠中唤醒</span><br><span class="line">kCFRunLoopExit          = (1UL &lt;&lt; 7), // 即将退出Loop</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></3></p>
+<p>我们可以手动添加observe监听runloop的状态做相应的回调:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CFRunLoopRef runLoop = CFRunLoopGetCurrent();</span><br><span class="line">CFStringRef runLoopMode = kCFRunLoopDefaultMode;</span><br><span class="line">CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler</span><br><span class="line">(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity _) &#123;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line">CFRunLoopAddObserver(runLoop, observer, runLoopMode);</span><br></pre></td></tr></table></figure></p>
+<p>#5、runloop的内部逻辑:</p>
+<ol>
+<li>首先根据modeName找到对应mode,modeitems为空,直接return;</li>
+<li>通知observers即将进入loop,(Entry)创建自动释放池autoreleasePool;</li>
+<li>通知observers即将处理Timer;</li>
+<li>通知observers即将处理Source0;</li>
+<li>执行Source0加入的block回调;</li>
+<li>如果有Source1的消息,需要立刻处理这个Source1;所以直接跳转到10;</li>
+<li>如果没有待处理的消息,通知observers即将进入休眠(sleep);(销毁自动释放池并创建新的自动释放池)</li>
+<li>如果有以下的情况发生,通知observers runloop即将被唤醒;<br>a. source1事件;<br>b. 一个Timer时间到了;<br>c. runloop启动时设置的最大超过时间;<br>d. 手动唤醒;调用CFRunLoopSourceSignal(source)并CFRunLoopWakeUp(runloop)唤醒runloop;</li>
+<li>通知observers即将被唤醒;</li>
+<li>处理唤醒时收到的消息;跳转到3;</li>
+<li>如果有以下的情况发生,通知observers即将退出;<br><1>设置了runloop最大的超时时间;<br><2>modeitems为空;<br><3>手动停止,CFRunLoopStop();</3></2></1></li>
+</ol>
+<p>#6、runloop的启动和关闭;<br>(1)runloop的启动:</p>
+<p>run:使用run启动runloop时CFRunLoopStop()是无法退出的,如果想退出那么只能让modeitem里面空;但是使用CFRunLoopRun()是可以直接用CFRunLoopStop()退出的;</p>
+<p>runUntilDate:runloop运行直到某个时间点结束;</p>
+<p>runMode:beforeDate:在某个时间点之前在,某个RunLoopMode下运行runloop;</p>
+<p>(2)runloop的关闭:</p>
+<p>设置超时时间:以上的二三中情况;<br>手动结束CFRunLoopStop():以上的第一种情况;</p>
+<p>#7、runloop的应用:</p>
+<p><1>AFNetWorking;</1></p>
+<p>下面是每个runloop文章中必提的一段代码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+ (void)networkRequestThreadEntryPoint:(id)__unused object &#123;</span><br><span class="line">@autoreleasepool &#123;</span><br><span class="line">[[NSThread currentThread] setName:@&quot;AFNetworking&quot;];</span><br><span class="line"></span><br><span class="line">NSRunLoop *runLoop = [NSRunLoop currentRunLoop];</span><br><span class="line">[runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];</span><br><span class="line">[runLoop run];</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+ (NSThread *)networkRequestThread &#123;</span><br><span class="line">static NSThread *_networkRequestThread = nil;</span><br><span class="line">static dispatch_once_t oncePredicate;</span><br><span class="line">dispatch_once(&amp;oncePredicate, ^&#123;</span><br><span class="line">_networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];</span><br><span class="line">[_networkRequestThread start];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">return _networkRequestThread;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码我们需要注意两个问题:<br>1,为什么这里的请求创建的子线程需要用单例?<br>2,为什么在获取当前线程的runloop的时候向它添加一个NSMachPort并run?</p>
+<p>答:AFN是对于NSURLConnection的封装,但是请求的结果是异步返回的,如果不给该线程添加runloop,那么请求结束后就会推出,这时候我们就需要给他添加runloop保证线程鲜活,添加NSMachPort是因为runloop的启动是必须有一个modeitem的,所以添加了一个source进去,挂起该线程;至于用单例是为了防止不断创建线程导致内存的一直涨;</p>
+<p><2>UITableView-FDTemplateLayoutCell;</2></p>
+<blockquote>
+<ol>
+<li>FDTemplateLayoutCell是百度团队开发一个高度预缓存的框架;它会在页面处于空闲状态时计算并缓存cell的高度，当用户正在滑动列表时显然不应该执行计算任务影响滑动体验;对于cell可变的界面比如聊天优化是非常客观的;<ol>
+<li>它的原理也是利用runloop;它该当前的runloop注册了一个observe,监听runloop即将休眠的时候,也就是上面的步骤7时,runloop处理了所有的source事件后即将进入睡眠时,监听到后回调计算cell的高度;</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p><3>定时器滑动同时;</3></p>
+<p><4>GCD;</4></p>
+<p><5>PerformSelecter;</5></p>
+<p>参考本章:<br>1,<a href="http://www.jianshu.com/u/3e55748920d2" target="_blank" rel="noopener">http://www.jianshu.com/u/3e55748920d2</a><br>2,<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="noopener">https://blog.ibireme.com/2015/05/18/runloop/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/02/测试/" rel="next" title="测试">
+                <i class="fa fa-chevron-left"></i> 测试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XJ</p>
+              <p class="site-description motion-element" itemprop="description">jxshunqiziran</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XJ</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
