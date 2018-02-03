@@ -87,7 +87,7 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-02-03T16:34:31.000Z">
+<meta property="og:updated_time" content="2018-02-03T16:35:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="结识RunLoop">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
@@ -302,13 +302,13 @@
 
       
         <p>&emsp;&emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;<br><a id="more"></a><br>这是正文</p>
-<h1 id="1、是啥"><a href="#1、是啥" class="headerlink" title="1、是啥?"></a>1、是啥?<br></h1><p>&emsp;&emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;</p>
+<h1 id="1、是啥"><a href="#1、是啥" class="headerlink" title="1、是啥?"></a>1、是啥?</h1><p><br><br>&emsp;&emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;</p>
 <h1 id="2、有什么作用"><a href="#2、有什么作用" class="headerlink" title="2、有什么作用?"></a>2、有什么作用?</h1><ul>
 <li>保持线程的鲜活;(让线程不会执行一次任务后就退出结束)</li>
 <li>在有任务时工作,<br>没有时休眠,减少CPU的压力;(在有输入源工作,没有时会sleep)</li>
 <li>处理各种事件源;</li>
 </ul>
-<h1 id="3、它和线程有什么关系呢"><a href="#3、它和线程有什么关系呢" class="headerlink" title="3、它和线程有什么关系呢?"></a>3、它和线程有什么关系呢?<br></h1><p>&emsp;&emsp;  runloop和线程是一一对应的关系,也就是说一个线程对应一个runloop,程序启动后系统会创建一个全局的字典保存runloop,线程是key,runloop是对应的value,而且runloop采用类似懒加载的形式,子线程的runloop第一次去获取才会去创建,也就是根据线程去全局的字典中去找,找不到创建,但是需要注意的是主线程的runloop是程序启动就会自动获取的,CFRunloopRef中可以用CFRunLoopGetMain() 和 CFRunLoopGetCurrent()获取.</p>
+<h1 id="3、它和线程有什么关系呢"><a href="#3、它和线程有什么关系呢" class="headerlink" title="3、它和线程有什么关系呢?"></a>3、它和线程有什么关系呢?</h1><p><br><br>&emsp;&emsp;  runloop和线程是一一对应的关系,也就是说一个线程对应一个runloop,程序启动后系统会创建一个全局的字典保存runloop,线程是key,runloop是对应的value,而且runloop采用类似懒加载的形式,子线程的runloop第一次去获取才会去创建,也就是根据线程去全局的字典中去找,找不到创建,但是需要注意的是主线程的runloop是程序启动就会自动获取的,CFRunloopRef中可以用CFRunLoopGetMain() 和 CFRunLoopGetCurrent()获取.</p>
 <h1 id="4、RunLoopMode和ModeItem"><a href="#4、RunLoopMode和ModeItem" class="headerlink" title="4、RunLoopMode和ModeItem"></a>4、RunLoopMode和ModeItem</h1><p>&emsp;&emsp;  Runloop启动时需要指定一个RunloopMode才能运行,而且一个Runloop可以有多个RunloopMode,如果你要切换模式,则需要先退出当前的RunloopMode,一个RunloopMode又由多个modeItem组成,但是至少得有一个modeItem;下面介绍一下modeItem:</p>
 <ol>
 <li>modeItem:简单来说既是源头,既是触发Runloop干事的源;</li>
