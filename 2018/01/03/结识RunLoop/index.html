@@ -87,7 +87,7 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-02-27T14:49:55.000Z">
+<meta property="og:updated_time" content="2018-02-27T14:52:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="结识RunLoop">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
@@ -308,7 +308,7 @@
 <li>在有任务时工作,<br>没有时休眠,减少CPU的压力;(在有输入源工作,没有时会sleep)</li>
 <li>处理各种事件源;</li>
 </ul>
-<h1 id="3、它和线程有什么关系呢"><a href="#3、它和线程有什么关系呢" class="headerlink" title="3、它和线程有什么关系呢?"></a>3、它和线程有什么关系呢?</h1><p><br><br>&emsp;&emsp;  runloop和线程是一一对应的关系,也就是说一个线程对应一个runloop,程序启动后系统会创建一个全局的字典保存runloop,线程是key,runloop是对应的value,而且runloop采用类似懒加载的形式,子线程的runloop第一次去获取才会去创建,也就是根据线程去全局的字典中去找,找不到创建,但是需要注意的是主线程的runloop是程序启动就会自动获取的,CFRunloopRef中可以用CFRunLoopGetMain() 和 CFRunLoopGetCurrent()获取.</p>
+<h1 id="3、它和线程有什么关系呢"><a href="#3、它和线程有什么关系呢" class="headerlink" title="3、它和线程有什么关系呢?"></a>3、它和线程有什么关系呢?</h1><p>&emsp;&emsp;  runloop和线程是一一对应的关系,也就是说一个线程对应一个runloop,程序启动后系统会创建一个全局的字典保存runloop,线程是key,runloop是对应的value,而且runloop采用类似懒加载的形式,子线程的runloop第一次去获取才会去创建,也就是根据线程去全局的字典中去找,找不到创建,但是需要注意的是主线程的runloop是程序启动就会自动获取的,CFRunloopRef中可以用CFRunLoopGetMain() 和 CFRunLoopGetCurrent()获取.</p>
 <h1 id="4、RunLoopMode和ModeItem"><a href="#4、RunLoopMode和ModeItem" class="headerlink" title="4、RunLoopMode和ModeItem"></a>4、RunLoopMode和ModeItem</h1><p>&emsp;&emsp;  Runloop启动时需要指定一个RunloopMode才能运行,而且一个Runloop可以有多个RunloopMode,如果你要切换模式,则需要先退出当前的RunloopMode,一个RunloopMode又由多个modeItem组成,但是至少得有一个modeItem;下面介绍一下modeItem:</p>
 <ol>
 <li>modeItem:简单来说既是源头,既是触发Runloop干事的源;</li>
@@ -343,14 +343,14 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+ (NSThread *)networkRequestThread &#123;</span><br><span class="line">static NSThread *_networkRequestThread = nil;</span><br><span class="line">static dispatch_once_t oncePredicate;</span><br><span class="line">dispatch_once(&amp;oncePredicate, ^&#123;</span><br><span class="line">_networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];</span><br><span class="line">[_networkRequestThread start];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">return _networkRequestThread;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这段代码我们需要注意两个问题:<br>1、为什么这里的请求创建的子线程需要用单例?<br>2、为什么在获取当前线程的runloop的时候向它添加一个NSMachPort并run?</p>
 <p>答:AFN是对于NSURLConnection的封装,但是请求的结果是异步返回的,如果不给该线程添加runloop,那么请求结束后就会推出,这时候我们就需要给他添加runloop保证线程鲜活,添加NSMachPort是因为runloop的启动是必须有一个modeitem的,所以添加了一个source进去,挂起该线程;至于用单例是为了防止不断创建线程导致内存的一直涨;</p>
-<p><2>UITableView-FDTemplateLayoutCell;</2></p>
+<p>(2)UITableView-FDTemplateLayoutCell;</p>
 <blockquote>
 <ol>
 <li>FDTemplateLayoutCell是百度团队开发一个高度预缓存的框架;它会在页面处于空闲状态时计算并缓存cell的高度，当用户正在滑动列表时显然不应该执行计算任务影响滑动体验;对于cell可变的界面比如聊天优化是非常客观的;</li>
 <li>它的原理也是利用runloop;它该当前的runloop注册了一个observe,监听runloop即将休眠的时候,也就是上面的步骤7时,runloop处理了所有的source事件后即将进入睡眠时,监听到后回调计算cell的高度;</li>
 </ol>
 </blockquote>
-<p><3>定时器滑动同时:  </3></p>
+<p>(3)定时器滑动同时:  </p>
 <p>NSRunLoopMode我们只需了解这三种:</p>
 <ol>
 <li>NSDefaultRunLoopMode:默认模式,程序启动后就在这个模式下;</li>
@@ -361,8 +361,7 @@
 <pre><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 </code></pre><p>&emsp;&emsp;   那么我们滑动时就不会发送心跳包,连接中断;原因:定时器是加在Default模式下的,滑动时系统会停止Default模式,开启Tracking模式,然后该模式Mode下并没有添加定时器定时源Timer Source;如果我们这样写就能完美解决: </p>
 <pre><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-</code></pre><p><4>GCD;</4></p>
-<p><5>PerformSelecter;</5></p>
+</code></pre><p>(4)GCD;<br>(5)PerformSelecter;</p>
 <p>参考本章:<br>1、<a href="http://www.jianshu.com/u/3e55748920d2" target="_blank" rel="noopener">http://www.jianshu.com/u/3e55748920d2</a><br>2、<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="noopener">https://blog.ibireme.com/2015/05/18/runloop/</a></p>
 
       
