@@ -87,7 +87,8 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-4251141e73d3cdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-02-27T14:52:53.000Z">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-0a073710c3a04f4b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-27T15:01:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="结识RunLoop">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;  处理事件的循环,简单来说它就是用来处理事件的一个对象,它给我们提供了两个对象,一个是基于CoreFoundation框架的CFRunloopRef,相对比较底层一点,另外一个就是基于CFRunloopRef封装的NSRunloop,我们通常通过NSRunlop完成相关操作;">
@@ -361,7 +362,8 @@
 <pre><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 </code></pre><p>&emsp;&emsp;   那么我们滑动时就不会发送心跳包,连接中断;原因:定时器是加在Default模式下的,滑动时系统会停止Default模式,开启Tracking模式,然后该模式Mode下并没有添加定时器定时源Timer Source;如果我们这样写就能完美解决: </p>
 <pre><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-</code></pre><p>(4)GCD;<br>(5)PerformSelecter;</p>
+</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/2099412-0a073710c3a04f4b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="timer"><br>&emsp;&emsp;   结果是没有执行方法的,第一个的原因虽然该函数可以将timer放入runloop,但是该线程的runloop并没有创建,2的原因是tiemr没有放入runloop无法执行;  </p>
+<p>(4)GCD;<br>(5)PerformSelecter;</p>
 <p>参考本章:<br>1、<a href="http://www.jianshu.com/u/3e55748920d2" target="_blank" rel="noopener">http://www.jianshu.com/u/3e55748920d2</a><br>2、<a href="https://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="noopener">https://blog.ibireme.com/2015/05/18/runloop/</a></p>
 
       
