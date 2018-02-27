@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="程序向服务器发送请求，获得一份产品列表,以及订单号(这里获取商品的productID也可以放在本地),服务器返回包含产品标识符的列表,程序根据产品的productID向App Store发送请求，得到产品的信息(包括价格,productID,,,,,)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="走进苹果内购IAP">
+<meta property="og:url" content="http://yoursite.com/2018/02/02/走进苹果内购IAP/index.html">
+<meta property="og:site_name" content="顺其自然">
+<meta property="og:description" content="程序向服务器发送请求，获得一份产品列表,以及订单号(这里获取商品的productID也可以放在本地),服务器返回包含产品标识符的列表,程序根据产品的productID向App Store发送请求，得到产品的信息(包括价格,productID,,,,,)">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-70a580515362ec74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2099412-c79229bd3da08cda.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-02T18:04:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="走进苹果内购IAP">
+<meta name="twitter:description" content="程序向服务器发送请求，获得一份产品列表,以及订单号(这里获取商品的productID也可以放在本地),服务器返回包含产品标识符的列表,程序根据产品的productID向App Store发送请求，得到产品的信息(包括价格,productID,,,,,)">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2099412-70a580515362ec74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/02/走进苹果内购IAP/"/>
+
+
+
+
+
+  <title>走进苹果内购IAP | 顺其自然</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">顺其自然</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">星星点灯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/02/走进苹果内购IAP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JX">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="顺其自然">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">走进苹果内购IAP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T20:33:26+08:00">
+                2018-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>程序向服务器发送请求，获得一份产品列表,以及订单号(这里获取商品的productID也可以放在本地),服务器返回包含产品标识符的列表,程序根据产品的productID向App Store发送请求，得到产品的信息(包括价格,productID,,,,,)<br><a id="more"></a><br>这是正文</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2099412-70a580515362ec74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-01-23 15.19.12.png"></p>
+<h6 id="马上要过年了-而且还是本命年-为了庆祝下大鸡年-放一张苹果官网的中国元素-不多说设计此图的人NB"><a href="#马上要过年了-而且还是本命年-为了庆祝下大鸡年-放一张苹果官网的中国元素-不多说设计此图的人NB" class="headerlink" title="马上要过年了,而且还是本命年,为了庆祝下大鸡年,放一张苹果官网的中国元素(不多说设计此图的人NB)."></a>马上要过年了,而且还是本命年,为了庆祝下大鸡年,放一张苹果官网的中国元素(不多说设计此图的人NB).</h6><p>##1,了解苹果内购</p>
+<h5 id="当我们在AppStore里面下载下载软件的时候-标题下面会显示提供App内购买项目-通常我们下载的游戏也有购物的软件-应用里面采用了虚拟商品-例如-金币-点券-夺宝币-100颗宝石-当然像电商的软件直接买实物就不是的-苹果公司就强制使用IAP内购-原因很简单-他要从中扣税赚钱-苹果2016赚了2000亿主要来自这个地方-苹果2016收入报表"><a href="#当我们在AppStore里面下载下载软件的时候-标题下面会显示提供App内购买项目-通常我们下载的游戏也有购物的软件-应用里面采用了虚拟商品-例如-金币-点券-夺宝币-100颗宝石-当然像电商的软件直接买实物就不是的-苹果公司就强制使用IAP内购-原因很简单-他要从中扣税赚钱-苹果2016赚了2000亿主要来自这个地方-苹果2016收入报表" class="headerlink" title="当我们在AppStore里面下载下载软件的时候,标题下面会显示提供App内购买项目,通常我们下载的游戏也有购物的软件,应用里面采用了虚拟商品,例如:金币,点券,夺宝币,100颗宝石,,,,,  当然像电商的软件直接买实物就不是的, 苹果公司就强制使用IAP内购,原因很简单,他要从中扣税赚钱.苹果2016赚了2000亿主要来自这个地方.苹果2016收入报表"></a>当我们在AppStore里面下载下载软件的时候,标题下面会显示提供App内购买项目,通常我们下载的游戏也有购物的软件,应用里面采用了虚拟商品,例如:金币,点券,夺宝币,100颗宝石,,,,,  当然像电商的软件直接买实物就不是的, 苹果公司就强制使用IAP内购,原因很简单,他要从中扣税赚钱.苹果2016赚了2000亿主要来自这个地方.<a href="http://a.mynews.ly/!oD.E9IAX" target="_blank" rel="noopener">苹果2016收入报表</a></h5><p><img src="http://upload-images.jianshu.io/upload_images/2099412-c79229bd3da08cda.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="65965B5B3055225F3E2FF2CFAA2C0776.png"></p>
+<p>##2,熟悉内购的流程;</p>
+<p>#####</p>
+<ol>
+<li>程序向服务器发送请求，获得一份产品列表,以及订单号(这里获取商品的productID也可以放在本地)。</li>
+<li>服务器返回包含产品标识符的列表。</li>
+<li>程序根据产品的productID向App Store发送请求，得到产品的信息(包括价格,productID,,,,,)。</li>
+<li>App Store返回产品信息。</li>
+<li>程序把返回的产品信息显示给用户（App的store界面）</li>
+<li>用户选择某个产品</li>
+<li>程序向App Store发送支付请求</li>
+<li>App Store处理支付请求并返回交易完成信息。</li>
+<li>程序从信息中获得数据，并发送至服务器(也可以在本地验证但是不安全)。</li>
+<li>服务器记录交易信息。</li>
+<li>服务器将数据发给App Store来验证该交易。</li>
+<li>App Store对收到的数据进行解析，返回该数据和说明其是否有效的标识。</li>
+<li>服务器读取返回的数据，确定用户购买的内容。</li>
+<li>服务器将购买的内容传递给程序。(如果你是在app内验证当然是没有10-14的)</li>
+</ol>
+<h2 id="3-完成内购前的准备工作"><a href="#3-完成内购前的准备工作" class="headerlink" title="3,完成内购前的准备工作;"></a>3,完成内购前的准备工作;</h2><p><1>. 去苹果开发者中心填写appid,创建齿轮文件;</1></p>
+<p><2>. 去iTunes上填写合同、税务以及银行信息(下面给的参考文献有具体步骤,不多说),关于填写W-8BEN-E可以参考这篇文章<br><a href="http://www.jianshu.com/p/db39c6b5e5d2" target="_blank" rel="noopener">iOS-Appstore-iTunes Connect最新协议、税务和银行业务填写（W-8BEN）</a></2></p>
+<p><3>. 去iTunes创建对应appid的项目;</3></p>
+<p><4> 添加App内购买项目;</4></p>
+<p><5> 添加沙箱测试账号;(在真机测试自己的程序时需要退出当前手机在Appstore登录的账号)</5></p>
+<h2 id="5-开始撸内购的代码"><a href="#5-开始撸内购的代码" class="headerlink" title="5,开始撸内购的代码;"></a>5,开始撸内购的代码;</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">1. 发苹果服务器请求商品信息;</span><br><span class="line">//productID就是你在创建购买项目时所填写的产品ID</span><br><span class="line">[self requestProductData: productID];</span><br><span class="line">[[SKPaymentQueue defaultQueue] addTransactionObserver:self];</span><br><span class="line"></span><br><span class="line">-(void)requestProductData:(NSString *)type&#123;</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;-------------请求对应的产品信息----------------&quot;);</span><br><span class="line">NSArray *product = [[NSArray alloc] initWithObjects:type, nil];</span><br><span class="line">NSSet *nsset = [NSSet setWithArray:product];</span><br><span class="line">SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:nsset];</span><br><span class="line">request.delegate = self;</span><br><span class="line">[request start];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">2. 接收商品信息并发送购买请求;</span><br><span class="line">- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response&#123;</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;--------------收到产品反馈消息---------------------&quot;);</span><br><span class="line">NSArray *product = response.products;</span><br><span class="line">if([product count] == 0)&#123;</span><br><span class="line">NSLog(@&quot;--------------没有商品------------------&quot;);</span><br><span class="line">return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SKProduct *p = nil;</span><br><span class="line">for (SKProduct *pro in product) &#123;</span><br><span class="line">NSLog(@&quot;pro info&quot;);</span><br><span class="line">NSLog(@&quot;SKProduct 描述信息：%@&quot;, [pro description]);</span><br><span class="line">NSLog(@&quot;localizedTitle 产品标题：%@&quot;, [pro localizedTitle]);</span><br><span class="line">NSLog(@&quot;localizedDescription 产品描述信息：%@&quot;, [pro localizedDescription]);</span><br><span class="line">NSLog(@&quot;price 价格：%@&quot;, [pro price]);</span><br><span class="line">NSLog(@&quot;productIdentifier Product id：%@&quot;, [pro productIdentifier]);</span><br><span class="line"></span><br><span class="line">if([pro.productIdentifier isEqualToString: productID])&#123;</span><br><span class="line">p = pro;</span><br><span class="line"></span><br><span class="line">&#125;else&#123;</span><br><span class="line">NSLog(@&quot;不相同&quot;);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">SKPayment *payment = [SKPayment paymentWithProduct:p];</span><br><span class="line">NSLog(@&quot;发送购买请求&quot;);</span><br><span class="line">[[SKPaymentQueue defaultQueue] addPayment:payment];</span><br><span class="line">&#125;</span><br><span class="line">3. 监听购买请求结果;</span><br><span class="line">- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions&#123;</span><br><span class="line"></span><br><span class="line">NSLog(@&quot; 监听购买结果 -----paymentQueue--------&quot;);</span><br><span class="line">for (SKPaymentTransaction *transaction in transactions)</span><br><span class="line">&#123;</span><br><span class="line">switch (transaction.transactionState)</span><br><span class="line">&#123;</span><br><span class="line">case SKPaymentTransactionStatePurchased:&#123;</span><br><span class="line">NSLog(@&quot;-----交易完成 --------&quot;);</span><br><span class="line">//交易完成</span><br><span class="line">[self commitSeversSucceeWithTransaction:transaction];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">break;</span><br><span class="line">case SKPaymentTransactionStateFailed:&#123;</span><br><span class="line">NSLog(@&quot;-----交易失败 --------&quot;);</span><br><span class="line">//交易失败</span><br><span class="line">[self failedTransaction:transaction];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">break;</span><br><span class="line">case SKPaymentTransactionStateRestored:&#123;</span><br><span class="line">NSLog(@&quot;-----已经购买过该商品(重复支付) --------&quot;);</span><br><span class="line">//已经购买过该商品</span><br><span class="line">[self restoreTransaction:transaction];</span><br><span class="line">[self commitSeversSucceeWithTransaction:transaction];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">case SKPaymentTransactionStatePurchasing:  &#123;</span><br><span class="line">//商品添加进列表</span><br><span class="line">NSLog(@&quot;-----商品添加进列表 --------&quot;);</span><br><span class="line">&#125;</span><br><span class="line">break;</span><br><span class="line">default:</span><br><span class="line">break;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">5,得到receipt并向服务器验证;</span><br><span class="line">NSString * productIdentifier = transaction.payment.productIdentifier;</span><br><span class="line">NSLog(@&quot;productIdentifier Product id：%@&quot;, productIdentifier);</span><br><span class="line">NSString *transactionReceiptString= nil;</span><br><span class="line"></span><br><span class="line">//系统IOS7.0以上获取支付验证凭证的方式应该改变，切验证返回的数据结构也不一样了。</span><br><span class="line"></span><br><span class="line">// 验证凭据，获取到苹果返回的交易凭据</span><br><span class="line">// appStoreReceiptURL iOS7.0增加的，购买交易完成后，会将凭据存放在该地址</span><br><span class="line">NSURL *receiptUrl=[[NSBundle mainBundle] appStoreReceiptURL];</span><br><span class="line">NSData * receiptData = [NSData dataWithContentsOfURL:receiptUrl];</span><br><span class="line"></span><br><span class="line">transactionReceiptString = [receiptData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;transactionReceiptString == %@&quot;,transactionReceiptString);</span><br><span class="line">[[NSUserDefaults standardUserDefaults]setObject:transactionReceiptString forKey:@&quot;receipt&quot;];</span><br><span class="line"></span><br><span class="line">// 向自己的服务器验证购买凭证</span><br><span class="line">[SDKRequestManager requestPayReceipt:transactionReceiptString Succee:^(NSDictionary *dic) &#123;</span><br><span class="line">NSLog(@&quot;----yyy--%@&quot;,dic);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125; withFail:^(NSError *error) &#123;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[[SKPaymentQueue defaultQueue] finishTransaction: transaction];</span><br><span class="line">6, 本地缓存receipt,,,,服务器验证成功删除本地receipt,</span><br></pre></td></tr></table></figure>
+<p>代码就不放到git上面了,内购的代码都差不多,自己问下度娘.</p>
+<h2 id="4-处理下工程中遇到的相关问题"><a href="#4-处理下工程中遇到的相关问题" class="headerlink" title="4,处理下工程中遇到的相关问题;"></a>4,处理下工程中遇到的相关问题;</h2><ol>
+<li><p>获取不到商品信息(这是最痛苦的):<br><1>. 合同、税务以及银行信息没有填对,如果你是公司账号,那么W-8BEN-E必须填,而且不要填错额!个人账号的话就不需要填了.<br><2>. 你的程序的AppID和iTunes上不一致;<br><3>. 齿轮文件和AppID不匹配;</3></2></1></p>
+</li>
+<li><p>苹果验证后返回的结果;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;receipt&quot;:</span><br><span class="line">&#123;</span><br><span class="line">&quot;original_purchase_date_pst&quot;:&quot;2015-06-22 20:56:34 America/Los_Angeles&quot;, //购买时间,太平洋标准时间</span><br><span class="line">&quot;purchase_date_ms&quot;:&quot;1435031794826&quot;, //购买时间毫秒</span><br><span class="line">&quot;unique_identifier&quot;:&quot;5bcc5503dbcc886d10d09bef079dc9ab08ac11bb&quot;,//唯一标识符</span><br><span class="line">&quot;original_transaction_id&quot;:&quot;xxxxxxxxx&quot;, //原始交易ID</span><br><span class="line">&quot;bvrs&quot;:&quot;1.0&quot;,//iPhone程序的版本号</span><br><span class="line">&quot;transaction_id&quot;:&quot;xxxxxxxxxx&quot;, //交易的标识</span><br><span class="line">&quot;quantity&quot;:&quot;1&quot;, //购买商品的数量</span><br><span class="line">&quot;unique_vendor_identifier&quot;:&quot;AEEC55C0-FA41-426A-B9FC-324128342652&quot;, //开发商交易ID</span><br><span class="line">&quot;item_id&quot;:&quot;1008526677&quot;,//App Store用来标识程序的字符串</span><br><span class="line">&quot;product_id&quot;:&quot;cosmosbox.strikehero.gems60&quot;,//商品的标识</span><br><span class="line">&quot;purchase_date&quot;:&quot;2015-06-23 03:56:34 Etc/GMT&quot;,//购买时间</span><br><span class="line">&quot;original_purchase_date&quot;:&quot;2015-06-23 03:56:34 Etc/GMT&quot;, //原始购买时间</span><br><span class="line">&quot;purchase_date_pst&quot;:&quot;2015-06-22 20:56:34 America/Los_Angeles&quot;,//太平洋标准时间</span><br><span class="line">&quot;bid&quot;:&quot;com.cosmosbox.StrikeHero&quot;,//iPhone程序的bundle标识</span><br><span class="line">&quot;original_purchase_date_ms&quot;:&quot;1435031794826&quot;//毫秒</span><br><span class="line">&#125;,</span><br><span class="line">&quot;status&quot;:0 //状态码,0为成功</span><br><span class="line">&#125;</span><br><span class="line">这里的transaction_id和original_transaction_id是一样的可以作为唯一标示;;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>“您已购买此App内购买项目,此项目将免费恢复”<br>在收到购买监听,处理相关逻辑的时候需要加上:[[SKPaymentQueue defaultQueue] finishTransaction:transaction];</p>
+</li>
+</ol>
+<p>##5,参考文献(都是些大神的文章值得借鉴,认真看一般的问题能解决)</p>
+<ol>
+<li><a href="http://www.cnblogs.com/sanshengyanhuo/p/5581080.html" target="_blank" rel="noopener">iOS应用内购/内付费</a></li>
+<li><a href="http://blog.csdn.net/shenjie12345678/article/details/40978977" target="_blank" rel="noopener">iOS应用程序内购/内付费 </a></li>
+<li><a href="http://www.cocoachina.com/special/iap.html" target="_blank" rel="noopener">内购</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/03/结识RunLoop/" rel="next" title="结识RunLoop">
+                <i class="fa fa-chevron-left"></i> 结识RunLoop
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/03/iOS中的证书没那么难/" rel="prev" title="iOS中的证书没那么难">
+                iOS中的证书没那么难 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JX</p>
+              <p class="site-description motion-element" itemprop="description">路很长,慢慢走,欣赏</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#马上要过年了-而且还是本命年-为了庆祝下大鸡年-放一张苹果官网的中国元素-不多说设计此图的人NB"><span class="nav-number">1.</span> <span class="nav-text">马上要过年了,而且还是本命年,为了庆祝下大鸡年,放一张苹果官网的中国元素(不多说设计此图的人NB).</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#当我们在AppStore里面下载下载软件的时候-标题下面会显示提供App内购买项目-通常我们下载的游戏也有购物的软件-应用里面采用了虚拟商品-例如-金币-点券-夺宝币-100颗宝石-当然像电商的软件直接买实物就不是的-苹果公司就强制使用IAP内购-原因很简单-他要从中扣税赚钱-苹果2016赚了2000亿主要来自这个地方-苹果2016收入报表"><span class="nav-number"></span> <span class="nav-text">当我们在AppStore里面下载下载软件的时候,标题下面会显示提供App内购买项目,通常我们下载的游戏也有购物的软件,应用里面采用了虚拟商品,例如:金币,点券,夺宝币,100颗宝石,,,,,  当然像电商的软件直接买实物就不是的, 苹果公司就强制使用IAP内购,原因很简单,他要从中扣税赚钱.苹果2016赚了2000亿主要来自这个地方.苹果2016收入报表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-完成内购前的准备工作"><span class="nav-number"></span> <span class="nav-text">3,完成内购前的准备工作;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-开始撸内购的代码"><span class="nav-number"></span> <span class="nav-text">5,开始撸内购的代码;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-处理下工程中遇到的相关问题"><span class="nav-number"></span> <span class="nav-text">4,处理下工程中遇到的相关问题;</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JX</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
