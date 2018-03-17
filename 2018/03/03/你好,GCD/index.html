@@ -87,7 +87,7 @@
 <meta property="og:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-b4f67a627960d360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-03-17T02:46:16.000Z">
+<meta property="og:updated_time" content="2018-03-17T02:48:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="你好,GCD!">
 <meta name="twitter:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
@@ -312,8 +312,9 @@
 <h1 id="1、为什么要用GCD"><a href="#1、为什么要用GCD" class="headerlink" title="1、为什么要用GCD?"></a>1、为什么要用GCD?</h1><ul>
 <li>GCD会自动帮我们管理线程的生命周期,它内部维护着一个线程池;</li>
 <li>它可以更好的利用多核CPU;</li>
-<li>使用起来方便,我们只需要将需要执行的任务放入block就可以了;<h1 id="2、如何更好的理解任务和队列"><a href="#2、如何更好的理解任务和队列" class="headerlink" title="2、如何更好的理解任务和队列;"></a>2、如何更好的理解任务和队列;</h1><strong>任务</strong>:你让程序干的事情,也就是程序需要执行哪些操作;GCD中通常block里面就是一系列的任务;<br><img src="https://upload-images.jianshu.io/upload_images/2099412-b4f67a627960d360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="任务"></li>
+<li>使用起来方便,我们只需要将需要执行的任务放入block就可以了;</li>
 </ul>
+<h1 id="2、如何更好的理解任务和队列"><a href="#2、如何更好的理解任务和队列" class="headerlink" title="2、如何更好的理解任务和队列;"></a>2、如何更好的理解任务和队列;</h1><p><strong>任务</strong>:你让程序干的事情,也就是程序需要执行哪些操作;GCD中通常block里面就是一系列的任务;<br><img src="https://upload-images.jianshu.io/upload_images/2099412-b4f67a627960d360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="任务"></p>
 <p><strong>队列</strong>:队列是用来装任务的,管理任务的,不然任务就乱套了; 它采用FIFO先进先出的原则,不管是串行队列还是并发队列都是一样的;</p>
 <p><strong>串行队列</strong>: 队列中的任务只能一个个执行,前面一个没有执行完,后面一个不能执行;</p>
 <p><strong>并发队列</strong>: 前面一个任务出队列开始执行的时候,后面一个就    可以    在新的线程去执行了,注意这里是可以,表示一种能力,不一定会这样;</p>
@@ -325,9 +326,9 @@
 <p><strong>异步</strong>:</p>
 <ul>
 <li>可以开启新的线程,注意是可以 并不一定会,它有这个能力;</li>
-<li>不需要等block里面的代码执行完,立即返回<h1 id="4、一个关于GCD的故事"><a href="#4、一个关于GCD的故事" class="headerlink" title="4、一个关于GCD的故事"></a>4、一个关于GCD的故事</h1></li>
+<li>不需要等block里面的代码执行完,立即返回</li>
 </ul>
-<p>有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;</p>
+<h1 id="4、一个关于GCD的故事"><a href="#4、一个关于GCD的故事" class="headerlink" title="4、一个关于GCD的故事"></a>4、一个关于GCD的故事</h1><p>有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;</p>
 <ul>
 <li>A老师把她的同学带到了咖啡店1:<br>学生们是只能等前面买好才能买的,而且就只有一个窗口, 所以结果:一个接一个按顺序买就好</li>
 </ul>
@@ -337,7 +338,9 @@
 <li><p>B老师把她的同学带到了咖啡店1:<br>虽然现实很好,有好多窗口卖咖啡,但是 学生都是乖孩子,有纪律的,前面一个买好后面才能买,所以就只需要去其他窗口中的一个窗口买就好了,结果:一个接一个按顺序买就好</p>
 </li>
 <li><p>B老师把她的同学带到了咖啡店2:<br>这里的孩纸是最幸运的,天时地利人和;   学生可以找其他窗口买,而且这里恰好就有好多窗口,他们几乎同时的在不同的窗户买起咖啡来; 结果:同时买;</p>
-<h1 id="5、GCD中的六种组合方式"><a href="#5、GCD中的六种组合方式" class="headerlink" title="5、GCD中的六种组合方式"></a>5、GCD中的六种组合方式</h1><h1 id="6、线程中的通信方式"><a href="#6、线程中的通信方式" class="headerlink" title="6、线程中的通信方式"></a>6、线程中的通信方式</h1><h1 id="7、GCD中的其他重要函数"><a href="#7、GCD中的其他重要函数" class="headerlink" title="7、GCD中的其他重要函数"></a>7、GCD中的其他重要函数</h1></li>
+</li>
+</ul>
+<h1 id="5、GCD中的六种组合方式"><a href="#5、GCD中的六种组合方式" class="headerlink" title="5、GCD中的六种组合方式"></a>5、GCD中的六种组合方式</h1><h1 id="6、线程中的通信方式"><a href="#6、线程中的通信方式" class="headerlink" title="6、线程中的通信方式"></a>6、线程中的通信方式</h1><h1 id="7、GCD中的其他重要函数"><a href="#7、GCD中的其他重要函数" class="headerlink" title="7、GCD中的其他重要函数"></a>7、GCD中的其他重要函数</h1><ul>
 <li><strong>队列组</strong><br>当有多个异步任务的时候,但是我们需要这些任务都完成的时候,才执行一些操作,由于是异步,我们无法保证所有任务的结果,这时候就可以用到dispatch_group, 比如说我们一个首页界面有好多请求,但是我想等所有请求都有结果的时候再显示,不然显示不全会很难看,这时候我们可以这样:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create();</span><br><span class="line">    </span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    dispatch_group_async(group, queue, ^&#123;</span><br><span class="line">        </span><br><span class="line">        for (int i = 0; i &lt; 3; ++i) &#123;</span><br><span class="line">            [NSThread sleepForTimeInterval:2];              // 模拟耗时操作</span><br><span class="line">            NSLog(@&quot;1---%@&quot;,[NSThread currentThread]);      // 打印当前线程</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;);</span><br><span class="line">   </span><br><span class="line">    dispatch_group_async(group, queue, ^&#123;</span><br><span class="line">        </span><br><span class="line">        for (int i = 0; i &lt; 2; ++i) &#123;</span><br><span class="line">            [NSThread sleepForTimeInterval:2];              // 模拟耗时操作</span><br><span class="line">            NSLog(@&quot;2---%@&quot;,[NSThread currentThread]);      // 打印当前线程</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;);</span><br><span class="line">   </span><br><span class="line">    dispatch_group_notify(group, queue, ^&#123;</span><br><span class="line">        </span><br><span class="line">        NSLog(@&quot;---所有任务完成了---&gt;&gt;&quot;);</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></li>
 </ul>
 
