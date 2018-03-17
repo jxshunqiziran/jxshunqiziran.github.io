@@ -87,7 +87,7 @@
 <meta property="og:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-b4f67a627960d360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-03-17T02:57:02.000Z">
+<meta property="og:updated_time" content="2018-03-17T02:58:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="你好,GCD!">
 <meta name="twitter:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
@@ -318,7 +318,7 @@
 <p><strong>队列</strong>:队列是用来装任务的,管理任务的,不然任务就乱套了; 它采用FIFO先进先出的原则,不管是串行队列还是并发队列都是一样的;</p>
 <p><strong>串行队列</strong>: 队列中的任务只能一个个执行,前面一个没有执行完,后面一个不能执行;</p>
 <p><strong>并发队列</strong>: 前面一个任务出队列开始执行的时候,后面一个就    可以    在新的线程去执行了,注意这里是可以,表示一种能力,不一定会这样;</p>
-<h2 id="3、同步和异步"><a href="#3、同步和异步" class="headerlink" title="3、同步和异步"></a>3、同步和异步<br></h2><p><strong>同步</strong>:</p>
+<h2 id="3、同步和异步"><a href="#3、同步和异步" class="headerlink" title="3、同步和异步"></a>3、同步和异步</h2><p><strong>同步</strong>:</p>
 <ul>
 <li>不开启新的线程就在当前线程执行,</li>
 <li>必须等block里面的代码执行完,dispathch才会返回;执行后面的;</li>
@@ -328,7 +328,7 @@
 <li>可以开启新的线程,注意是可以 并不一定会,它有这个能力;</li>
 <li>不需要等block里面的代码执行完,立即返回</li>
 </ul>
-<h2 id="4、一个关于GCD的故事"><a href="#4、一个关于GCD的故事" class="headerlink" title="4、一个关于GCD的故事"></a>4、一个关于GCD的故事</h2><p><br><br>有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;</p>
+<h2 id="4、一个关于GCD的故事"><a href="#4、一个关于GCD的故事" class="headerlink" title="4、一个关于GCD的故事"></a>4、一个关于GCD的故事</h2><p>有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;</p>
 <ul>
 <li>A老师把她的同学带到了咖啡店1:<br>学生们是只能等前面买好才能买的,而且就只有一个窗口, 所以结果:一个接一个按顺序买就好</li>
 </ul>
