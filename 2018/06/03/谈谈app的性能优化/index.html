@@ -88,7 +88,9 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-be83ba895ee47d5f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-f2a9cbf7be40b29b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-09-12T15:05:53.679Z">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-4420aca27e80dd59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-4f4bef71ce8358ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-09-12T15:45:13.603Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈app的性能优化">
 <meta name="twitter:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
@@ -325,8 +327,34 @@
 </ol>
 <p>   <img src="https://upload-images.jianshu.io/upload_images/2099412-f2a9cbf7be40b29b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2018-09-12 22.56.13.png">.<br>   我用上图来表达出现循环引用的原因,但需要注意:</p>
 <ol>
-<li>并不是所有的block内都需要用weakSelf;比如常见的:masonry、UIView动画block….</li>
+<li>并不是所有的block内都需要用weakSelf;比如常见的:masonry、UIView动画block….<ol>
+<li>delegate;</li>
+<li>循环内大量创建局部变量导致短时间内内存暴涨,虽然严格意义上属于内存警告;</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line">        UIButton *emojeBtn = </span><br><span class="line">        [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [self.view addSubView:emojeBtn];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
+</li>
+</ol>
+<p>for循环未结束之前创建的button会一直增加内存,可以用autoReleasePool解决,程序回执程序即将进入休眠和下一此唤醒期间将清理自动释放池;</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line">  @autoreleasepool &#123;</span><br><span class="line">        UIButton *emojeBtn = </span><br><span class="line">        [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [self.view addSubView:emojeBtn];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="那么问题来了-我们如何检测我们的项目哪里是否出现了内存泄漏呢"><a href="#那么问题来了-我们如何检测我们的项目哪里是否出现了内存泄漏呢" class="headerlink" title="那么问题来了,我们如何检测我们的项目哪里是否出现了内存泄漏呢?"></a>那么问题来了,我们如何检测我们的项目哪里是否出现了内存泄漏呢?</h3><p><strong>leaks—-&gt;&gt;&gt; alloction——&gt;&gt;MLeaksFinder—–&gt;&gt;&gt;自定的SDK</strong></p>
+<ul>
+<li><strong>Leaks</strong>:instruments内的工具,他可以检测上面的Leaked memory,并不能检测Abandoned memory;这里是个人操作的步骤:<ol>
+<li>点击Product下的profile开启instruments性能检测;</li>
+<li>点击左上角红点启动程序;</li>
+<li>选择中间控制面板的leaks—&gt;call Tree,因为需要查看调用的堆栈信息的;</li>
+<li>选择leak Checks查看内存泄漏情况;</li>
+<li>选择底部的call Tree并选择 hide SystemLibraries和 separate by thread;</li>
+<li>操作运行的app,跳转你认为可能会造成内存泄漏的界面;</li>
+<li>出现内存泄漏后会有红色的叉号;</li>
+<li>将区间选择为叉号左右;</li>
+<li>看下堆栈信息,查看最里面的方法,双击就可以查看到代码;</li>
+<li>这里可以明显的看到我的readlocalContacts方法内存泄漏了,点击查看找到了原因,,ABAdressBookCreateWithOption创建的没有释放,oc是不会帮我们释放的;CFRelease该对象即可;</li>
+</ol>
+</li>
+</ul>
+<p>  <img src="https://upload-images.jianshu.io/upload_images/2099412-4420aca27e80dd59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="D1B28233-3674-4DC1-9094-175A5AF50545.png"></p>
+<p>  <img src="https://upload-images.jianshu.io/upload_images/2099412-4f4bef71ce8358ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="63B33F86-FBB5-45D2-A2F8-0123EBBA6F67.png"></p>
 
       
     </div>
@@ -411,8 +439,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -454,6 +491,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#那么问题来了-我们如何检测我们的项目哪里是否出现了内存泄漏呢"><span class="nav-number">1.</span> <span class="nav-text">那么问题来了,我们如何检测我们的项目哪里是否出现了内存泄漏呢?</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
