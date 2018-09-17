@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-f2a9cbf7be40b29b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-4420aca27e80dd59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2099412-4f4bef71ce8358ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-09-12T15:45:13.603Z">
+<meta property="og:updated_time" content="2018-09-12T15:49:57.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈app的性能优化">
 <meta name="twitter:description" content="有两个咖啡店,咖啡店1只有一个窗口卖, 咖啡店2有很多窗口卖, 然后两个老师都带着 排着一条长队的 同学去买咖啡,   其中一个老师A告诉她的学生,你们等前面一个买好再接着买,另一个老师B告诉她的学生,你前面的同学开始买选咖啡的时候,下一个就可以去找其他窗口开始买了,不要等的;">
@@ -325,14 +325,11 @@
 <ol>
 <li><strong>block循环引用:</strong>这个很常见和很重要</li>
 </ol>
-<p>   <img src="https://upload-images.jianshu.io/upload_images/2099412-f2a9cbf7be40b29b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2018-09-12 22.56.13.png">.<br>   我用上图来表达出现循环引用的原因,但需要注意:</p>
+<p>   <img src="https://upload-images.jianshu.io/upload_images/2099412-f2a9cbf7be40b29b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2018-09-12 22.56.13.png">.<br>   我用上图来表达出现循环引用的原因,但需要注意:<br>   . 并不是所有的block内都需要用weakSelf;比如常见的:masonry、UIView动画block….</p>
 <ol>
-<li>并不是所有的block内都需要用weakSelf;比如常见的:masonry、UIView动画block….<ol>
 <li>delegate;</li>
 <li>循环内大量创建局部变量导致短时间内内存暴涨,虽然严格意义上属于内存警告;</li>
 <li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line">        UIButton *emojeBtn = </span><br><span class="line">        [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [self.view addSubView:emojeBtn];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
 </li>
 </ol>
 <p>for循环未结束之前创建的button会一直增加内存,可以用autoReleasePool解决,程序回执程序即将进入休眠和下一此唤醒期间将清理自动释放池;</p>
