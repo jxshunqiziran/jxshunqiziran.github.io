@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite-url/undefined/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</loc>
+    <lastmod>2021-10-03</lastmod>
+  </url>
+  <url>
     <loc>http://yoursite-url/undefined/Spring/</loc>
     <lastmod>2021-10-03</lastmod>
   </url>
   <url>
     <loc>http://yoursite-url/undefined/MySql%E7%B4%A2%E5%BC%95/</loc>
     <lastmod>2021-10-03</lastmod>
-  </url>
-  <url>
-    <loc>http://yoursite-url/undefined/test/</loc>
-    <lastmod>2021-09-30</lastmod>
   </url>
   <url>
     <loc>http://yoursite-url/en/Hexo-Theme-LiveMyLife/</loc>

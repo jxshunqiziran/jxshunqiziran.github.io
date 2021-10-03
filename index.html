@@ -517,6 +517,48 @@ This LiveMyLife theme created by Vincent modified from the original Porter YenYu
   <!-- top end -->
   
 
+  <a href="/undefined/Redis持久化/">
+    <h2 class="post-title">
+      Redis持久化
+    </h2>
+    <h3 class="post-subtitle">
+      
+    </h3>
+    <div class="post-content-preview">
+      RDB
+ 将内存数据生成快照, 是以二进制数据存储, 可以通过设置 “xx内 数据改动xx次”自动触发,也可以手动通过save或者bgsave命令触发;
+===&gt;  1. 由于它是快照形式,所以它是全量的,所以当内存很大时,比如说1G, 每次触发的时候会不会影响redis读写性能? 
+
+如果服务器宕机,那么距离上一次触发RDB之间的数据将会丢失?
+
+
+当触发RDB时,会fork出一个子......
+    </div>
+  </a>
+  
+  <p class="post-meta" style="margin: 10px 0;">
+    Posted by 江鑫 on
+    2021-10-03
+  </p>
+  <div class="tags">
+    
+    <a href="/tags/#数据库" title="数据库">数据库</a>
+    
+    <a href="/tags/#Redis" title="Redis">Redis</a>
+    
+  </div>
+  
+
+</div>
+<hr>
+
+<div class="post-preview">
+  
+  <!-- top start (article top hot config) -->
+  
+  <!-- top end -->
+  
+
   <a href="/undefined/Spring/">
     <h2 class="post-title">
       Spring
@@ -594,40 +636,6 @@ This LiveMyLife theme created by Vincent modified from the original Porter YenYu
     <a href="/tags/#mysql" title="mysql">mysql</a>
     
     <a href="/tags/#数据库" title="数据库">数据库</a>
-    
-  </div>
-  
-
-</div>
-<hr>
-
-<div class="post-preview">
-  
-  <!-- top start (article top hot config) -->
-  
-  <!-- top end -->
-  
-
-  <a href="/undefined/test/">
-    <h2 class="post-title">
-      test
-    </h2>
-    <h3 class="post-subtitle">
-      
-    </h3>
-    <div class="post-content-preview">
-      fasdfasefasfa
-gasgsda```
-1fsdfasfasfasf
-...
-    </div>
-  </a>
-  
-  <p class="post-meta" style="margin: 10px 0;">
-    Posted by 江鑫 on
-    2021-09-30
-  </p>
-  <div class="tags">
     
   </div>
   
@@ -734,7 +742,11 @@ Gitee 仓库地址：ht......
     
     
     
-    <a href="/tags/#数据库" title="数据库" rel="1">数据库</a>
+    <a href="/tags/#数据库" title="数据库" rel="2">数据库</a>
+    
+    
+    
+    <a href="/tags/#Redis" title="Redis" rel="1">Redis</a>
     
     
   </div>
@@ -824,16 +836,16 @@ Gitee 仓库地址：ht......
 <div class="widget">
   <ul>
     
+    <a href="undefined/Redis%E6%8C%81%E4%B9%85%E5%8C%96/">
+      <li>Redis持久化</li>
+    </a>
+    
     <a href="undefined/Spring/">
       <li>Spring</li>
     </a>
     
     <a href="undefined/MySql%E7%B4%A2%E5%BC%95/">
       <li>MySQL索引</li>
-    </a>
-    
-    <a href="undefined/test/">
-      <li>test</li>
     </a>
     
     <a href="en/Hexo-Theme-LiveMyLife/">
@@ -872,7 +884,7 @@ Gitee 仓库地址：ht......
 
 <h5><a href="/archives/">archives</a></h5>
 <div class="widget">
-  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="archives/2021/10/">October 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="archives/2021/09/">September 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li></ul>
+  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="archives/2021/10/">October 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li></ul>
 </div>
 
 
@@ -894,6 +906,10 @@ Gitee 仓库地址：ht......
     
     <a href="/categories/#MySQL">
       <li>MySQL</li>
+    </a>
+    
+    <a href="/categories/#Redis">
+      <li>Redis</li>
     </a>
     
   </ul>
