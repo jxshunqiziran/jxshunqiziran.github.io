@@ -139,10 +139,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://yoursite-url/archives/2021/">
+  <link rel="canonical" href="http://yoursite-url/Java/MySql索引/">
   <title>
     
-      either thin | or die
+      MySql索引 - either thin | or die
     
   </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
@@ -300,29 +300,7 @@
           <!-- LangSelect -->
           
           
-          <!-- LangSelect start -->
-          <!-- LangSelect -->
-<li>
-  <a id="lang-select-label"><i class="fa fa-globe"></i>
-    <span>
-      English
-    </span>
-    <select id="lang-select" data-canonical="archives/2021/index.html">
-      
-      
-      <option value="en"  selected >
-        English
-      </option>
-      
-      <option value="cn" >
-        简体中文
-      </option>
-      
-    </select>
-  </a>
-</li>
-
-          <!-- LangSelect end -->
+          
           
           
         </ul>
@@ -384,9 +362,9 @@
     }
 
     header.intro-header {
-       /*page*/
-        background-image: var(--intro-header-background-image-url-page);
-        /* background-image: url('/img/header_img/archive_bg2.jpg'); */
+       /*post*/
+        background-image: var(--intro-header-background-image-url-post);
+        /* background-image: url(''); */
       
     }
 
@@ -408,10 +386,42 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>天上掉下来的星星</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">顺其自然</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+              <a class="tag" href="/tags/#mysql" title="mysql">mysql</a>
+              
+            </div>
+            <h1>MySql索引</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by 江鑫 on
+              2021-10-03
+            </span>
+
+
+            
+            <!-- WordCount start -->
+            <div class="blank_box"></div>
+            <span class="meta">
+              Estimated Reading Time <span class="post-count">5</span> Minutes
+            </span>
+            <div class="blank_box"></div>
+            <span class="meta">
+              Words <span class="post-count">1.4k</span> In Total
+            </span>
+            <div class="blank_box"></div>
+            <!-- WordCount end -->
+            
+            
+            <!-- 不蒜子统计 start -->
+            <span class="meta" id="busuanzi_container_page_pv">
+              Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+            </span>
+            <!-- 不蒜子统计 end -->
+            
+
+
           </div>
           
         </div>
@@ -452,327 +462,342 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-		<!-- Main Content -->
-<div class="container">
-  <div class="row">
+		<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
+
+        <h1 id="MySql索引"><a href="#MySql索引" class="headerlink" title="MySql索引"></a>MySql索引</h1><h3 id="1-用哪种数据结构更适合索引"><a href="#1-用哪种数据结构更适合索引" class="headerlink" title="1. 用哪种数据结构更适合索引?"></a>1. 用哪种数据结构更适合索引?</h3><h4 id="1-Hash-哈希"><a href="#1-Hash-哈希" class="headerlink" title="1. Hash(哈希):"></a>1. Hash(哈希):</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtdsj68wngj60t60jy3zw02.jpg" alt=""></p>
+<p>将索引值也就是key通过hash函数换算成一个数值,将value放在数组的这个数值位置,value放的是数据指针;</p>
+<p>优点: 快速定位到数据指针,找到数据;</p>
+<p>缺点: </p>
+<ol>
+<li><p>范围查询的话就需要全表扫描,效率较低,比较适合等值查询的场景; HashMap,Redis;</p>
+</li>
+<li><p>而且key通过hash函数得到的数值有重复索引的可能(因为数组不可能是无线长的),可能就得加上链表了,一旦数量量比较大,链表就会越长,遍历链表就需要更多的时间;</p>
+</li>
+</ol>
+<h4 id="2-二叉树"><a href="#2-二叉树" class="headerlink" title="2. 二叉树:"></a>2. 二叉树:</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zgvtb1oj30km0aawm2.jpg" alt=""></p>
+<p>特点: </p>
+<ol>
+<li>每个节点最多有两个子节点,</li>
+<li>每个节点存储了指向数据的指针;</li>
+<li>左子树的值要小于父节点的值,右子树的值要大于父节点的值;</li>
+</ol>
+<p>优点: 极大的减少了查询次数</p>
+<p>弊端: 如果插入的数据是顺序增长的,将会出现极端情况; 树的深度很高;</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zozgdlhj30ro0g00wv.jpg" alt=""></p>
+<h4 id="3-红黑树"><a href="#3-红黑树" class="headerlink" title="3. 红黑树:"></a>3. 红黑树:</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zt1qmc9j30vu0ekq4a.jpg" alt=""></p>
+<p>会自动调整树的结构,保证左右分支的平衡;</p>
+<p>弊端:  当数据量比较大,比如500w,深度将会很高,还是增加了磁盘IO;</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">琢磨一下<span class="symbol">:</span> </span><br><span class="line"> </span><br><span class="line">既然要降低树的深度,是不是可以横向扩展,增加每个节点的元素个数;</span><br><span class="line">一次io只读取一个节点的效率是不是太低了,一个节点如果是<span class="built_in">int</span>的话,只有<span class="number">4</span>b,能不能一次性读取更多个,</span><br><span class="line"> </span><br><span class="line">计算机进行一次磁盘IO,是有最小单位的, 一般是<span class="number">4</span>k,叫做一页, 根据硬件配置的不同读取对应<span class="built_in">n</span>页,  如果索引是<span class="built_in">int</span>类型的话,        那么一次最少可以取<span class="symbol">:</span> <span class="number">4</span>*<span class="number">1024</span>/<span class="number">4</span> 个元素了;</span><br></pre></td></tr></table></figure>
+<h4 id="4-B-tree"><a href="#4-B-tree" class="headerlink" title="4.B-tree:"></a>4.B-tree:</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs700jem6vj30rg0e2n23.jpg" alt=""></p>
+<ol>
+<li><p>各个节点也存储了数据data的;</p>
+</li>
+<li><p>非叶子节点是直接是没有指针的;</p>
+</li>
+</ol>
+<p>   优点: 极大的减少了树的深度;减少了查询次数;</p>
+<p>   弊端:  </p>
+<ol>
+<li><p>磁盘IO每次读取到内存的大小是固定页的,innodb通常是一页16k(如果一次磁盘io无线,那岂不是把所有索引放在一个节点做一次磁盘IO岂不是更好),由于除了存索引值,还保存了数据data,这样一个节点就极大减少了能存储索引的个数,也就增加了树的深度</p>
+</li>
+<li><p>它的索引值是分散的,做范围查询效率不高,每次都要重新查找;</p>
+</li>
+</ol>
+<h4 id="5-b-tree"><a href="#5-b-tree" class="headerlink" title="5. b+tree"></a>5. b+tree</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs70oy66raj30s60fmgwq.jpg" alt=""></p>
+<p>特点:</p>
+<ol>
+<li><p>通过增加冗余索引,将数据全部放在叶子节点,非叶子节点不存数据;</p>
+</li>
+<li><p>非叶子节点直接是有指针指向的,并按照顺序排列;</p>
+</li>
+</ol>
+<p>优点分析: </p>
+<ol>
+<li>由于非叶子节点不存储数据,一次磁盘的IO取的大小是固定的, 也就是每个节点的大小是固定的, 这就增加了可以存储索引的个数,也就是度; 这样算一下; 如果是树高为4的情况,(4*1024/4)的三次方,也就是十几亿,而且一般根节点通常是放在内存中的,这样一样2次磁盘io就可以从十几亿中查到想要的值, 有些情况二级节点也会放到内存中;这样磁盘io的次数就更少了;</li>
+</ol>
+<ol>
+<li><p>由于数据全部在叶子节点,那么我们找到一个索引后,就不需要重新查找了,非叶子节点中是有指针的,先从取出来的一页中往后面读,比如我要查大于31的, 图中先查到20,因为20和30在一页中,在查20的时候同时把31也查到内存中了,直接在内存取就行,通过指针,快速找到下一页,40和50,发现40 就不再查询;</p>
+<p>完美解决上面所有问题!!!!!!!!!!!!!!!!!!!</p>
+</li>
+</ol>
+<p>人生需要不断的思考: </p>
+<p>如果有多个索引,一个索引对应一个b+tree,而一个b+tree的叶子节点保存了所有数据data, 这样data数据是不是冗余? </p>
+<p>如果data数据有修改,是不是还要全部去修改,保证数据一致性,这样的代价是相当大的;</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gte0fht476j61bi0h2dhf02.jpg" alt=""></p>
+<p>这样设计非主键索引的非叶子节点保存的是主键,通过主键再去主键树再查询一次,叫做回表;</p>
+<p>===&gt; 所以 当我们只需要查询主键的情况下,用 select id from tt where k; 只查主键的话会减少回表,提升性能;</p>
+<p>innodb引擎,mysql一般不会推荐使用业务键作为主键,会让我们设置主键,并且最好是整型,自增长的?</p>
+<ol>
+<li><p>一定要设置主键?    </p>
+<p>没有主键,非主键索引将无法指向主键了,没有设置的话,mysql也会自动给我们设置;</p>
+</li>
+<li><p>最好是int类型?</p>
+</li>
+</ol>
+<p>​      当有多个索引时,多个非主键索引的叶子节点保存的都是主键,如果主键是varchar等其他类型,将会极大的占用了空间;</p>
+<p>​     int类型在回表的时候,int类型做比较也是更加性能高的;</p>
+<ol>
+<li><p>为什么要设置主键自增长?</p>
+<p>比如varchar等其他类型,通过asci码换算成数字,但是varchar等字符类型时随机的,大小顺序是不能保证的,当插入的大小是中间时,将从中间插入,叶子节点的页中其他元素就要移动位置,如果当前页已经满了,还要做页的分裂,比较损耗性能的,如果是自增长的话,直接在最后面的页中插入数据就可以了;</p>
+</li>
+</ol>
+<h3 id="2-覆盖索引-联合索引"><a href="#2-覆盖索引-联合索引" class="headerlink" title="2. 覆盖索引,联合索引"></a>2. 覆盖索引,联合索引</h3>
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
+          
+          
+          <li class="next">
+            <a href="/Java/test/" data-toggle="tooltip" data-placement="top" title="test">Next Post &rarr;</a>
+          </li>
+          
+        </ul>
+
+        
+        <!-- tip start -->
+        <!-- tip -->
+<!-- tip start -->
+<div class="tip">
+  <p>
+    
+      If you like this blog or find it useful for you, you are welcome to comment on it. You are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+    
+  </p>
+</div>
+<!-- tip end -->
+
+        <!-- tip end -->
+        
+
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=MySql索引&body=Hi,I found this website and thought you might like it http://yoursite-url/Java/MySql索引/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+        <!-- Sharing End -->
+        
+        <hr>
+
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+  <!-- gitalk start -->
+  <!-- Docs:https://github.com/gitalk/gitalk/blob/master/readme-cn.md -->
+
+  <div id="gitalk-container"></div>
+
+  
+    <!-- <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.js"></script> -->
+    <script src="/js/comment/gitalk.js"></script>
+  
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: '',
+      clientSecret: '',
+      repo: '',
+      owner: '',
+      admin: '',
+      id: 'Sun Oct 03 2021 09:23:55 GMT+0800', // Ensure uniqueness and length less than 50
+      distractionFreeMode: false, // Facebook-like distraction free mode
+      perPage: 10,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      language: 'en',
+      proxy: 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token'
+    });
+    gitalk.render('gitalk-container');
+
+    var gtFolded = () => {
+      setTimeout(function () {
+        let markdownBody = document.getElementsByClassName("markdown-body");
+        let list = Array.from(markdownBody);
+        list.forEach(item => {
+          if (item.clientHeight > 250) {
+            item.classList.add('gt-comment-body-folded');
+            item.style.maxHeight = '250px';
+            item.title = 'Click to Expand';
+            item.onclick = function () {
+              item.classList.remove('gt-comment-body-folded');
+              item.style.maxHeight = '';
+              item.title = '';
+              item.onclick = null;
+            };
+          }
+        })
+      }, 800);
+    }
+  </script>
+
+  <!-- gitalk end -->
+
+
+<!-- 2. gitment comment -->
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#MySql%E7%B4%A2%E5%BC%95"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MySql索引</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-%E7%94%A8%E5%93%AA%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%9B%B4%E9%80%82%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">1. 用哪种数据结构更适合索引?</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-Hash-%E5%93%88%E5%B8%8C"><span class="toc-nav-number">1.0.1.1.</span> <span class="toc-nav-text">1. Hash(哈希):</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-nav-number">1.0.1.2.</span> <span class="toc-nav-text">2. 二叉树:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="toc-nav-number">1.0.1.3.</span> <span class="toc-nav-text">3. 红黑树:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-B-tree"><span class="toc-nav-number">1.0.1.4.</span> <span class="toc-nav-text">4.B-tree:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5-b-tree"><span class="toc-nav-number">1.0.1.5.</span> <span class="toc-nav-text">5. b+tree</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95-%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">2. 覆盖索引,联合索引</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
     
 
-    <!-- USE SIDEBAR -->
-    <!-- Post Container -->
-    <div class="
+
+
+      <!-- Sidebar Container -->
+      <div class="
                 col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
-      <!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-0 col-md-10 col-md-offset-1">
-      <!-- 归档列表 -->
-
-      
-
-      <!-- 归档列表 -->
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2021">
-          <span class="tag-text">2021</span>
-        </span>
-        <ul>
-          
-          <li>
-            10-03
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/Java/MySql索引/" style="color: #0085a1">
-              <span>
-                MySql索引
-                
-                -- Java
-                
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            09-30
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/Java/test/" style="color: #0085a1">
-              <span>
-                test
-                
-                -- Java
-                
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            07-06
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/undefined/索引/" style="color: #0085a1">
-              <span>
-                Untitled
-                
-                -- 
-                
-              </span>
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
-          <span class="tag-text">2020</span>
-        </span>
-        <ul>
-          
-          <li>
-            04-17
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/cn/Hexo-Theme-LiveMyLife/" style="color: #0085a1">
-              <span>
-                Hexo-Theme-LiveMyLife
-                
-                -- cn
-                
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            04-17
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/en/Hexo-Theme-LiveMyLife/" style="color: #0085a1">
-              <span>
-                Hexo-Theme-LiveMyLife
-                
-              </span>
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-
-      <!-- 如果开启评论功能 -->
-      
-    </div>
-
-    <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Visitors -->
-<h5><a href="/">VISITORS</a></h5>
-
-<div class="widget">
-  <span>
-    Viewed <b><i><span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span></i></b> Times
-  </span>
-  <br />
-  <span>
-    <b><i><span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span></i></b> Visitors In Total
-  </span>
-</div>
-
-
-        <hr>
-    
         <!-- Featured Tags -->
+        
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+            <a class="tag" href="/tags/#mysql" title="mysql">mysql</a>
+            
+          </div>
+        </section>
+        
 
-<section>
-  <h5><a href="/tags/">FEATURED TAGS</a></h5>
-  <div class="tags">
-    
-    
-    <a href="/tags/#Hexo-Theme-LiveMyLife" title="Hexo-Theme-LiveMyLife" rel="2">Hexo-Theme-LiveMyLife</a>
-    
-    
-    
-    <a href="/tags/#mysql" title="mysql" rel="1">mysql</a>
-    
-    
-  </div>
-</section>
-
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-  <h5><a href="/about/">ABOUT ME</a></h5>
-  <div class="short-about">
-
-    
-    <img id="avatar_pic" src="/img/avatar/WechatIMG117.jpg" alt="avatar_pic" style="box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -webkit-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);" />
-    
-
-    
-    <p>Fat people have no future, either thin or die...</p>
-    
-
-    <!-- SNS Link -->
-    <ul class="list-inline">
-      
-
-      
-      <li>
-        <a target="_blank" href="https://github.com/V-Vincen">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-      <li>
-        <a target="_blank" href="https://twitter.com/V_Vincen_">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-      <li>
-        <a target="_blank" href="https://www.instagram.com/v_vincen_">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-
-      
-
-      
-
-      
-      <li>
-        <a target="_blank" href="http://weibo.com/WVincen">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-    </ul>
-  </div>
-</section>
-
-        <hr>
-    
-        <!-- RECENT POSTS -->
-
-<h5><a href="/">RECENT POSTS</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="../../Java/MySql%E7%B4%A2%E5%BC%95/">
-      <li>MySql索引</li>
-    </a>
-    
-    <a href="../../Java/test/">
-      <li>test</li>
-    </a>
-    
-    <a href="../../undefined/%E7%B4%A2%E5%BC%95/">
-      <li>(no title)</li>
-    </a>
-    
-    <a href="../../en/Hexo-Theme-LiveMyLife/">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-    <a href="../../cn/Hexo-Theme-LiveMyLife/">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
         <!-- Friends Blog -->
-
-<h5><a href="/">FRIENDS</a></h5>
-<ul class="list-inline">
-  
-  <li><a href="https://v-vincen.life/" target="_blank">V_Vincen</a></li>
-  
-  <li><a href="http://beantech.org" target="_blank">Bean Tech</a></li>
-  
-  <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
-  
-  <li><a href="https://hexo.io/" target="_blank">Hexo</a></li>
-  
-</ul>
-
-
+        
         <hr>
-    
-        <!-- Archives -->
+        <h5>FRIENDS</h5>
+        <ul class="list-inline">
 
-<h5><a href="/archives/">archives</a></h5>
-<div class="widget">
-  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="10/">October 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="09/">September 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="07/">July 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="../2020/04/">April 2020</a><span class="archive-list-count">2</span></li></ul>
-</div>
-
-
-        <hr>
-    
-        <!-- Categories -->
-
-<h5><a href="/categories/">categories</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="/categories/#Hexo-Theme-LiveMyLife">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-    <a href="/categories/#Java">
-      <li>Java</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
-</div>
-
-
-    
+          
+          <li>
+            <a href="https://v-vincen.life/" target="_blank">V_Vincen</a>
+          </li>
+          
+          <li>
+            <a href="http://beantech.org" target="_blank">Bean Tech</a>
+          </li>
+          
+          <li>
+            <a href="http://huangxuan.me" target="_blank">Hux Blog</a>
+          </li>
+          
+          <li>
+            <a href="https://hexo.io/" target="_blank">Hexo</a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 		<!-- Footer (contains ThemeColor、viewer) -->
