@@ -424,11 +424,11 @@
             <!-- WordCount start -->
             <div class="blank_box"></div>
             <span class="meta">
-              Estimated Reading Time <span class="post-count">5</span> Minutes
+              Estimated Reading Time <span class="post-count">7</span> Minutes
             </span>
             <div class="blank_box"></div>
             <span class="meta">
-              Words <span class="post-count">1.4k</span> In Total
+              Words <span class="post-count">2.2k</span> In Total
             </span>
             <div class="blank_box"></div>
             <!-- WordCount end -->
@@ -490,101 +490,83 @@
       <!-- Post Container -->
       <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-        <h1>MySQL索引</h1>
-<h3 id="1-用哪种数据结构更适合索引">1. 用哪种数据结构更适合索引?</h3>
-<h4 id="1-Hash-哈希">1. Hash(哈希):</h4>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtdsj68wngj60t60jy3zw02.jpg" alt=""></p>
-<p>将索引值也就是key通过hash函数换算成一个数值,将value放在数组的这个数值位置,value放的是数据指针;</p>
-<p>优点: 快速定位到数据指针,找到数据;</p>
-<p>缺点:</p>
-<ol>
-<li>
-<p>范围查询的话就需要全表扫描,效率较低,比较适合等值查询的场景; HashMap,Redis;</p>
-</li>
-<li>
-<p>而且key通过hash函数得到的数值有重复索引的可能(因为数组不可能是无线长的),可能就得加上链表了,一旦数量量比较大,链表就会越长,遍历链表就需要更多的时间;</p>
-</li>
-</ol>
-<h4 id="2-二叉树">2. 二叉树:</h4>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zgvtb1oj30km0aawm2.jpg" alt=""></p>
-<p>特点:</p>
+        <h2 id="1-磁盘io读取">1. 磁盘io读取;</h2>
+<p>​       磁盘读取数据靠的是机械运动，每次读取数据花费的时间可以分为寻道时间、旋转延迟、传输时间三个部分;</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/2467058/1651663399070-226018f1-5fd2-42b9-bd59-7be2d97cb872.png" alt="img"></p>
+<p>数据就放在2345中间的扇形区域, 那么要定位到这个扇形区域,就应该知道2345各个位置才行;</p>
+<p>​           (1) 寻道: 这里就是定位到4和5的位置;通过指针水平方向移动定位; 磁臂移动到指定磁道所需要的时间，主流磁盘一般在5ms以下；</p>
+<p>​          (2) 旋转延迟:  就是这里的2和3,通过旋转就能定位到2和3,速度相对较快, 就是我们经常听说的磁盘转速，比如一个磁盘7200转，表示每分钟能转7200次，也就是说1秒钟能转120次，旋转延迟就是1/120/2 = 4.17ms</p>
+<p>​         (3) 传输时间指的是从磁盘读出或将数据写入磁盘的时间，一般在零点几毫秒，相对于前两个时间可以忽略不计。</p>
+<p>那么访问一次磁盘的时间，即一次磁盘IO的时间约等于5+4.17 = 9ms左右，听起来还挺不错的，但要知道一台500 -MIPS的机器每秒可以执行5亿条指令;考虑到磁盘IO是非常高昂的操作，计算机操作系统做了一些优化，当一次IO时，不光把当前磁盘地址的数据，而是把相邻的数据也都读取到内存缓冲区内，因为局部预读性原理告诉我们，当计算机访问一个地址的数据的时候，与其相邻的数据也会很快被访问到。每一次IO读取的数据我们称之为一页(page)。具体一页有多大数据跟操作系统有关，一般为4k或8k，</p>
+<h2 id=""></h2>
+<h2 id="2-选择什么样的数据结构更适合mysql的存储">2. 选择什么样的数据结构更适合mysql的存储;</h2>
+<p>研究数据结构之前可以熟悉下这个网站https://www.cs.usfca.edu/~galles/visualization/Algorithms.html可以很形象的描述各个数据结构;</p>
+<h3 id="2-1-哈希">2.1  哈希</h3>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/2467058/1651674599520-1f3d7239-b28f-436f-b5f3-2e06e26dcf52.png" alt="img"></p>
+<p>​           hash是我们最容易想到的数据结构,通过hash算法将索引key换算成一个指针地址,也就是行数据存放的位置,这样其实一次io就能解决问题,它的缺陷也显而易见, 当我们执行 a &gt; 100这种范围的查询的时候就一脸懵了,需要一个个遍历了;</p>
+<p>​</p>
+<h3 id="2-2-二叉树">2.2 二叉树</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zgvtb1oj30km0aawm2.jpg" alt="img"></p>
+<p><strong>二叉树的特点: (更我们猜数字的游戏很想,根据大小范围一步步找到)</strong></p>
 <ol>
 <li>每个节点最多有两个子节点,</li>
 <li>每个节点存储了指向数据的指针;</li>
 <li>左子树的值要小于父节点的值,右子树的值要大于父节点的值;</li>
 </ol>
-<p>优点: 极大的减少了查询次数</p>
-<p>弊端: 如果插入的数据是顺序增长的,将会出现极端情况; 树的深度很高;</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zozgdlhj30ro0g00wv.jpg" alt=""></p>
-<h4 id="3-红黑树">3. 红黑树:</h4>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zt1qmc9j30vu0ekq4a.jpg" alt=""></p>
-<p>会自动调整树的结构,保证左右分支的平衡;</p>
-<p>弊端:  当数据量比较大,比如500w,深度将会很高,还是增加了磁盘IO;</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">琢磨一下<span class="symbol">:</span> </span><br><span class="line"> </span><br><span class="line">既然要降低树的深度,是不是可以横向扩展,增加每个节点的元素个数;</span><br><span class="line">一次io只读取一个节点的效率是不是太低了,一个节点如果是<span class="built_in">int</span>的话,只有<span class="number">4</span>b,能不能一次性读取更多个,</span><br><span class="line"> </span><br><span class="line">计算机进行一次磁盘IO,是有最小单位的, 一般是<span class="number">4</span>k,叫做一页, 根据硬件配置的不同读取对应<span class="built_in">n</span>页,  如果索引是<span class="built_in">int</span>类型的话,        那么一次最少可以取<span class="symbol">:</span> <span class="number">4</span>*<span class="number">1024</span>/<span class="number">4</span> 个元素了;</span><br></pre></td></tr></table></figure>
-<h4 id="4-B-tree">4.B-tree:</h4>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs700jem6vj30rg0e2n23.jpg" alt=""></p>
-<ol>
-<li>
-<p>各个节点也存储了数据data的;</p>
-</li>
-<li>
-<p>非叶子节点是直接是没有指针的;</p>
-<p>优点: 极大的减少了树的深度;减少了查询次数;</p>
-<p>弊端:</p>
-</li>
-<li>
-<p>磁盘IO每次读取到内存的大小是固定页的,innodb通常是一页16k(如果一次磁盘io无线,那岂不是把所有索引放在一个节点做一次磁盘IO岂不是更好),由于除了存索引值,还保存了数据data,这样一个节点就极大减少了能存储索引的个数,也就增加了树的深度</p>
-</li>
-<li>
-<p>它的索引值是分散的,做范围查询效率不高,每次都要重新查找;</p>
-</li>
-</ol>
-<h4 id="5-b-tree">5. b+tree</h4>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs70oy66raj30s60fmgwq.jpg" alt=""></p>
+<p>总结:  二叉树的优点很明显极大的减少了查询次数,但是如果数据是顺序增长的,那么树的高度就会很深,查询效率一样很低;</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zozgdlhj30ro0g00wv.jpg" alt="img"></p>
+<h3 id="2-3-红黑树">2.3 红黑树</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs6zt1qmc9j30vu0ekq4a.jpg" alt="img"></p>
+<p>特点:  会自动调整树的结构,保证左右分支的平衡;(具体有相应的算法)</p>
+<p>总结:  数据量比较大,比如500w,深度将会很高,还是增加了磁盘IO;</p>
+<p>既然要降低树的深度,是不是可以横向扩展,增加每个节点的元素个数;<br>
+一次io只读取一个节点的效率是不是太低了,一个节点如果是int的话,只有4b,能不能一次性读取更多个,计算机进行一次磁盘IO,是有最小单位的, 一般是4k,叫做一页, 根据硬件配置的不同读取对应n页,  如果索引是int类型的话,        那么一次最少可以取: 4*1024/4 个元素了;</p>
+<p>回想最开始学习的硬件知识,计算机取数据的时候,最小单位是1页,差不多4k的大小,具体一次取多少也跟操作系统有关,也就是最小n*4k的大小,那么用红黑树,一次只取一个值岂不是很浪费, 换一种角度来看, 既然深度不能太深,那么我增加水平的宽带不就可以嘛,每个节点多存点数据;这样b-tree这种数据结构就很合适了;</p>
+<h3 id="2-4-B-tree">2.4 B-tree</h3>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/2467058/1651672643083-3b0064f4-cac2-4232-b088-682fa2c6f2f0.png" alt="img"></p>
 <p>特点:</p>
 <ol>
-<li>
-<p>通过增加冗余索引,将数据全部放在叶子节点,非叶子节点不存数据;</p>
-</li>
-<li>
-<p>非叶子节点直接是有指针指向的,并按照顺序排列;</p>
-</li>
+<li>一个节点存多条数据,每条数据对应一个key-value,key是索引值,value是对应的行数据;</li>
+<li>节点中的数据从左到右递增;</li>
+<li>叶子节点没有指针指向;</li>
+<li>叶子节点有相同的深度;</li>
 </ol>
-<p>优点分析:</p>
+<p>总结:  由于每次查询出一个节点,都是以页为单位,一个节点里面有很多数据,这样极大的减少了树的深度;缺点不太明显哈哈;</p>
 <ol>
 <li>
-<p>由于非叶子节点不存储数据,一次磁盘的IO取的大小是固定的, 也就是每个节点的大小是固定的, 这就增加了可以存储索引的个数,也就是度; 这样算一下; 如果是树高为4的情况,(4*1024/4)的三次方,也就是十几亿,而且一般根节点通常是放在内存中的,这样一样2次磁盘io就可以从十几亿中查到想要的值, 有些情况二级节点也会放到内存中;这样磁盘io的次数就更少了;</p>
+<p>由于行数据也是保存在非叶子节点上,这样同样一页的大小就减少了放索引值的数量,无形中增加了树的深度;</p>
 </li>
 <li>
-<p>由于数据全部在叶子节点,那么我们找到一个索引后,就不需要重新查找了,非叶子节点中是有指针的,先从取出来的一页中往后面读,比如我要查大于31的, 图中先查到20,因为20和30在一页中,在查20的时候同时把31也查到内存中了,直接在内存取就行,通过指针,快速找到下一页,40和50,发现40 就不再查询;</p>
+<p>叶子节点没有指针指向下个节点,做范围查询的时候每次都需要查;</p>
 </li>
 </ol>
-<p>完美解决上面所有问题!!!</p>
-<p>人生需要不断的思考:</p>
-<p>如果有多个索引,一个索引对应一个b+tree,而一个b+tree的叶子节点保存了所有数据data, 这样data数据是不是冗余?</p>
-<p>如果data数据有修改,是不是还要全部去修改,保证数据一致性,这样的代价是相当大的;</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gte0fht476j61bi0h2dhf02.jpg" alt=""></p>
-<p>这样设计非主键索引的非叶子节点保存的是主键,通过主键再去主键树再查询一次,叫做回表;</p>
-<p>===&gt; 所以 当我们只需要查询主键的情况下,用 select id from tt where k; 只查主键的话会减少回表,提升性能;</p>
-<p>innodb引擎,mysql一般不会推荐使用业务键作为主键,会让我们设置主键,并且最好是整型,自增长的?</p>
+<h3 id="2-5-B-treeimg">2.5 B+tree<img src="https://cdn.nlark.com/yuque/0/2022/jpeg/2467058/1651673709835-ab2da78a-bf85-432f-96f5-a8ae3cea3644.jpeg" alt="img"></h3>
+<p><strong>特点</strong>:</p>
 <ol>
-<li>
-<p>一定要设置主键?</p>
-<p>没有主键,非主键索引将无法指向主键了,没有设置的话,mysql也会自动给我们设置;</p>
-</li>
-<li>
-<p>最好是int类型?</p>
-</li>
+<li>通过增加冗余索引,将数据全部放在叶子节点,非叶子节点不存数据;</li>
+<li>非叶子节点直接是有指针指向的,并按照顺序排列;</li>
 </ol>
-<p>​      当有多个索引时,多个非主键索引的叶子节点保存的都是主键,如果主键是varchar等其他类型,将会极大的占用了空间;</p>
-<p>​     int类型在回表的时候,int类型做比较也是更加性能高的;</p>
-<ol start="3">
-<li>
-<p>为什么要设置主键自增长?</p>
-<p>比如varchar等其他类型,通过asci码换算成数字,但是varchar等字符类型时随机的,大小顺序是不能保证的,当插入的大小是中间时,将从中间插入,叶子节点的页中其他元素就要移动位置,如果当前页已经满了,还要做页的分裂,比较损耗性能的,如果是自增长的话,直接在最后面的页中插入数据就可以了;</p>
-</li>
+<p>从它的特点也可以看出,b+tree完美的解决了上面b-tree的两个问题;</p>
+<ol>
+<li>由于非叶子节点不存储数据,一次磁盘的IO取的大小是固定的, 也就是每个节点的大小是固定的, 这就增加了可以存储索引的个数,也就是度; 这样算一下; 如果是树高为4的情况,(4*1024/4)的三次方,也就是十几亿,而且一般根节点通常是放在内存中的,这样一样2次磁盘io就可以从十几亿中查到想要的值, 有些情况二级节点也会放到内存中;这样磁盘io的次数就更少了;</li>
+<li>由于数据全部在叶子节点,那么我们找到一个索引后,就不需要重新查找了,非叶子节点中是有指针的,先从取出来的一页中往后面读,比如我要查大于31的, 图中先查到20,因为20和30在一页中,在查20的时候同时把31也查到内存中了,直接在内存取就行,通过指针,快速找到下一页,40和50,发现40 就不再查询;</li>
 </ol>
-<h3 id="2-覆盖索引-联合索引">2. 覆盖索引,联合索引</h3>
+<p><strong>这样还不完美</strong></p>
+<blockquote>
+<p>疑问1: 如果有多个索引,一个索引对应一个b+tree,而一个b+tree的叶子节点保存了所有数据data, 这样data数据是不是冗余?</p>
+<p>疑问2:  如果data数据有修改,是不是还要全部去修改,保证数据一致性,这样的代价是相当大的;</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gte0fht476j61bi0h2dhf02.jpg" alt="img"></p>
+<p>可以看到图中非主键索引叶子节点对应的不是原始数据而是行数据的主键,这样就完美的解决了上面的两个问题,来回味一下,一是数据没有冗余了,二是也能快速找到数据;,通过主键再去主键树再查询一次,叫做回表;</p>
+<p>那么我么写sql语句的时候其实可以做优化了, 当我们只需要查询主键的情况下,用 select id from tt where k; 只查主键的话会减少回表,提升性能;</p>
+<h2 id="3-扩展">3. 扩展;</h2>
+<h3 id="3-1-innodb引擎-mysql一般不会推荐使用业务键作为主键-会让我们设置主键-并且最好是整型-自增长的">3.1 innodb引擎,mysql一般不会推荐使用业务键作为主键,会让我们设置主键,并且最好是整型,自增长的?</h3>
+<p>​    (1)   一定要设置主键?<br>
+​           没有主键,非主键索引将无法指向主键了,没有设置的话,mysql也会自动给我们设置;</p>
+<p>​    (2)   最好是int类型?</p>
+<p>​            当有多个索引时,多个非主键索引的叶子节点保存的都是主键,如果主键是varchar等其他类型,将会极大的占用了空间; int类型在回表的时候,int类型做比较也是更加性能高的;其实还有一个优势, 如果是字符串其实是需要转成ACII码做比较的,很明显没有数字直接比较快;</p>
+<p>​    (3)  为什么要设置主键自增长?<br>
+​          比如varchar等其他类型,通过asci码换算成数字,但是varchar等字符类型时随机的,大小顺序是不能保证的,当插入的大小是中间时,将从中间插入,叶子节点的页中其他元素就要移动位置,如果当前页已经满了,还要做页的分裂,比较损耗性能的,如果是自增长的话,直接在最后面的页中插入数据就可以了;</p>
 
 
         <hr>
@@ -595,10 +577,6 @@
             <a href="/undefined/Spring/" data-toggle="tooltip" data-placement="top" title="Spring">&larr; Previous Post</a>
           </li>
           
-          
-          <li class="next">
-            <a href="/cn/Hexo-Theme-LiveMyLife/" data-toggle="tooltip" data-placement="top" title="Hexo-Theme-LiveMyLife">Next Post &rarr;</a>
-          </li>
           
         </ul>
 
@@ -734,7 +712,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MySQL索引</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-%E7%94%A8%E5%93%AA%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%9B%B4%E9%80%82%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">1. 用哪种数据结构更适合索引?</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-Hash-%E5%93%88%E5%B8%8C"><span class="toc-nav-number">1.0.1.1.</span> <span class="toc-nav-text">1. Hash(哈希):</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-nav-number">1.0.1.2.</span> <span class="toc-nav-text">2. 二叉树:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="toc-nav-number">1.0.1.3.</span> <span class="toc-nav-text">3. 红黑树:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-B-tree"><span class="toc-nav-number">1.0.1.4.</span> <span class="toc-nav-text">4.B-tree:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5-b-tree"><span class="toc-nav-number">1.0.1.5.</span> <span class="toc-nav-text">5. b+tree</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95-%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">2. 覆盖索引,联合索引</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-%E7%A3%81%E7%9B%98io%E8%AF%BB%E5%8F%96"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1. 磁盘io读取;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link"><span class="toc-nav-number">2.</span> <span class="toc-nav-text"></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-%E9%80%89%E6%8B%A9%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%9B%B4%E9%80%82%E5%90%88mysql%E7%9A%84%E5%AD%98%E5%82%A8"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">2. 选择什么样的数据结构更适合mysql的存储;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-1-%E5%93%88%E5%B8%8C"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">2.1  哈希</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-2-%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">2.2 二叉树</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-3-%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">2.3 红黑树</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-4-B-tree"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">2.4 B-tree</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-5-B-treeimg"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">2.5 B+tree</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-%E6%89%A9%E5%B1%95"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">3. 扩展;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-innodb%E5%BC%95%E6%93%8E-mysql%E4%B8%80%E8%88%AC%E4%B8%8D%E4%BC%9A%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8%E4%B8%9A%E5%8A%A1%E9%94%AE%E4%BD%9C%E4%B8%BA%E4%B8%BB%E9%94%AE-%E4%BC%9A%E8%AE%A9%E6%88%91%E4%BB%AC%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%94%AE-%E5%B9%B6%E4%B8%94%E6%9C%80%E5%A5%BD%E6%98%AF%E6%95%B4%E5%9E%8B-%E8%87%AA%E5%A2%9E%E9%95%BF%E7%9A%84"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">3.1 innodb引擎,mysql一般不会推荐使用业务键作为主键,会让我们设置主键,并且最好是整型,自增长的?</span></a></li></ol></li></ol>
         
         </div>
       </aside>
@@ -907,7 +885,7 @@
         <p class="copyright text-muted">
           Copyright &copy;
           江鑫
-          2021
+          2022
           <br>
           Theme by
           <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a>

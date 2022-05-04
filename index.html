@@ -496,6 +496,42 @@
   <!-- top end -->
   
 
+  <a href="/undefined/Untitled/">
+    <h2 class="post-title">
+      Untitled
+    </h2>
+    <h3 class="post-subtitle">
+      
+    </h3>
+    <div class="post-content-preview">
+      学习mysql的索引,了解一些硬件的知识会更容易理解一点;
+1. 磁盘io读取;
+​       磁盘读取数据靠的是机械运动，每次读取数据花费的时间可以分为寻道时间、旋转延迟、传输时间三个部分;
+
+数据就放在2345中间的扇形区域, 那么要定位到这个扇形区域,就应该知道2345各个位置才行;
+​           (1) 寻道: 这里就是定位到4和5的位置;通过指针水平方向移动定位; 磁臂......
+    </div>
+  </a>
+  
+  <p class="post-meta" style="margin: 10px 0;">
+    Posted by 江鑫 on
+    2022-05-04
+  </p>
+  <div class="tags">
+    
+  </div>
+  
+
+</div>
+<hr>
+
+<div class="post-preview">
+  
+  <!-- top start (article top hot config) -->
+  
+  <!-- top end -->
+  
+
   <a href="/undefined/Redis持久化/">
     <h2 class="post-title">
       Redis持久化
@@ -590,19 +626,12 @@
       
     </h3>
     <div class="post-content-preview">
-      MySQL索引
-1. 用哪种数据结构更适合索引?
-1. Hash(哈希):
+      1. 磁盘io读取;
+​       磁盘读取数据靠的是机械运动，每次读取数据花费的时间可以分为寻道时间、旋转延迟、传输时间三个部分;
 
-将索引值也就是key通过hash函数换算成一个数值,将value放在数组的这个数值位置,value放的是数据指针;
-优点: 快速定位到数据指针,找到数据;
-缺点:
-
-
-范围查询的话就需要全表扫描,效率较低,比较适合等值查询的场景; HashMap,Redis;
-
-
-而且key通过hash函数得到的数值有重复索引的可......
+数据就放在2345中间的扇形区域, 那么要定位到这个扇形区域,就应该知道2345各个位置才行;
+​           (1) 寻道: 这里就是定位到4和5的位置;通过指针水平方向移动定位; 磁臂移动到指定磁道所需要的时间，主流磁盘一般在5ms以下；
+​ ......
     </div>
   </a>
   
@@ -615,43 +644,6 @@
     <a href="/tags/#mysql" title="mysql">mysql</a>
     
     <a href="/tags/#数据库" title="数据库">数据库</a>
-    
-  </div>
-  
-
-</div>
-<hr>
-
-<div class="post-preview">
-  
-  <!-- top start (article top hot config) -->
-  
-  <!-- top end -->
-  
-
-  <a href="/cn/Hexo-Theme-LiveMyLife/">
-    <h2 class="post-title">
-      Hexo-Theme-LiveMyLife
-    </h2>
-    <h3 class="post-subtitle">
-      A succinct hexo theme...
-    </h3>
-    <div class="post-content-preview">
-      
-移植 Hux Blog 的主题，感谢 Huxpro 设计了如此完美的主题。
-由 Vincent 创建的 LiveMyLife 的主题修改来源 YenYuHsuan，参考主题 dusign、Utone，感谢 dusign、Utone。
-
-仓库
-Github 仓库地址：https://github.com/V-Vincen/hexo-theme-livemylife
-Gitee 仓库地址：ht......
-    </div>
-  </a>
-  
-  <p class="post-meta" style="margin: 10px 0;">
-    Posted by 江鑫 on
-    2020-04-17
-  </p>
-  <div class="tags">
     
   </div>
   
@@ -809,6 +801,10 @@ Gitee 仓库地址：ht......
 <div class="widget">
   <ul>
     
+    <a href="undefined/Untitled/">
+      <li>(no title)</li>
+    </a>
+    
     <a href="undefined/Redis%E6%8C%81%E4%B9%85%E5%8C%96/">
       <li>Redis持久化</li>
     </a>
@@ -819,10 +815,6 @@ Gitee 仓库地址：ht......
     
     <a href="undefined/MySql%E7%B4%A2%E5%BC%95/">
       <li>MySQL索引</li>
-    </a>
-    
-    <a href="cn/Hexo-Theme-LiveMyLife/">
-      <li>Hexo-Theme-LiveMyLife</li>
     </a>
     
   </ul>
@@ -853,7 +845,7 @@ Gitee 仓库地址：ht......
 
 <h5><a href="/archives/">archives</a></h5>
 <div class="widget">
-  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="archives/2021/10/">October 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="archives/2020/04/">April 2020</a><span class="archive-list-count">1</span></li></ul>
+  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="archives/2022/05/">May 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="archives/2021/10/">October 2021</a><span class="archive-list-count">3</span></li></ul>
 </div>
 
 
@@ -954,7 +946,7 @@ Gitee 仓库地址：ht......
         <p class="copyright text-muted">
           Copyright &copy;
           江鑫
-          2021
+          2022
           <br>
           Theme by
           <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a>
